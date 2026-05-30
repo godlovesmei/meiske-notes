@@ -15,27 +15,54 @@ const year = new Date().getFullYear()
             {{ appConfig.site.tagline }}
           </p>
         </div>
-        <div>
-          <p class="text-xs font-medium uppercase tracking-wider text-mute">
-            Topics
-          </p>
-          <ul class="mt-4 space-y-2 text-sm text-ash">
-            <li>
-              <NuxtLink to="/?category=learn" class="no-underline hover:text-ink">
-                Learn
-              </NuxtLink>
-            </li>
-            <li>
-              <NuxtLink to="/?category=tutorial" class="no-underline hover:text-ink">
-                Tutorials
-              </NuxtLink>
-            </li>
-            <li>
-              <NuxtLink to="/?category=debugging" class="no-underline hover:text-ink">
-                Debugging
-              </NuxtLink>
-            </li>
-          </ul>
+        <div class="grid grid-cols-2 gap-8 sm:grid-cols-3 md:col-span-1">
+          <div>
+            <p class="text-xs font-medium uppercase tracking-wider text-mute">
+              Topics
+            </p>
+            <ul class="mt-4 space-y-2 text-sm text-ash">
+              <li>
+                <NuxtLink to="/?category=learn" class="no-underline hover:text-ink">
+                  Learn
+                </NuxtLink>
+              </li>
+              <li>
+                <NuxtLink to="/?category=tutorial" class="no-underline hover:text-ink">
+                  Tutorials
+                </NuxtLink>
+              </li>
+              <li>
+                <NuxtLink to="/?category=debugging" class="no-underline hover:text-ink">
+                  Debugging
+                </NuxtLink>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <p class="text-xs font-medium uppercase tracking-wider text-mute">
+              Site
+            </p>
+            <ul class="mt-4 space-y-2 text-sm text-ash">
+              <li>
+                <NuxtLink to="/about" class="no-underline hover:text-ink">
+                  About
+                </NuxtLink>
+              </li>
+              <li>
+                <NuxtLink to="/archive" class="no-underline hover:text-ink">
+                  Archive
+                </NuxtLink>
+              </li>
+              <li>
+                <NuxtLink to="/search" class="no-underline hover:text-ink">
+                  Search
+                </NuxtLink>
+              </li>
+              <li>
+                <a href="/rss.xml" class="no-underline hover:text-ink">RSS</a>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
       <div class="mt-12 border-t border-divider-soft pt-8 text-xs text-ash">

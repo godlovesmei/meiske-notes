@@ -13,6 +13,8 @@ export default defineContentConfig({
         date: z.string(),
         category,
         draft: z.boolean().optional(),
+        tags: z.array(z.string()).optional(),
+        readingTime: z.number().optional(),
       }),
     }),
   },

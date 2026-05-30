@@ -58,6 +58,10 @@
     @apply inline-flex items-center rounded-full bg-elevated px-2.5 py-1 text-xs text-body;
   }
 
+  .sub-nav-pill {
+    @apply inline-flex items-center rounded-full bg-elevated px-3.5 py-1.5 text-sm font-medium tracking-wide;
+  }
+
   .glow-learn {
     background: radial-gradient(
       ellipse 80% 50% at 50% -20%,

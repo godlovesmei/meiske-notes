@@ -3,6 +3,9 @@ title: Debugging a Vue hydration mismatch
 description: What the warning means, the usual suspects, and a checklist I run before blaming the framework.
 date: 2026-05-24
 category: debugging
+tags:
+  - vue
+  - ssr
 ---
 
 Hydration mismatches mean the HTML the server sent does not match what the client Vue app expects on first paint. Vue recovers, but you lose SSR benefits and may see flicker.
