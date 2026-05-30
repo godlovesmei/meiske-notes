@@ -13,8 +13,7 @@ function goHome() {
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col bg-canvas">
-    <AppHeader />
+  <div class="flex min-h-screen flex-col bg-canvas justify-center">
     <main class="flex flex-1 items-center">
       <div class="site-container py-24 text-center">
         <p class="font-mono text-sm text-mute">
@@ -30,12 +29,8 @@ function goHome() {
           <button type="button" class="btn-primary" @click="goHome">
             Back home
           </button>
-          <NuxtLink to="/search" class="btn-ghost no-underline">
-            Search
-          </NuxtLink>
         </div>
       </div>
     </main>
-    <AppFooter />
   </div>
 </template>
