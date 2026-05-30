@@ -83,7 +83,7 @@
   }
 
   .prose-blog {
-    @apply max-w-prose font-sans text-body-lg leading-relaxed;
+    @apply max-w-prose font-sans text-lg leading-relaxed;
   }
 
   .prose-blog :where(h2, h3, h4) {
