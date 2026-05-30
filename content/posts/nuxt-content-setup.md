@@ -3,6 +3,9 @@ title: Setting up a markdown blog with Nuxt Content
 description: Collections, frontmatter schemas, and rendering posts with ContentRenderer — the pieces I reach for on every static blog.
 date: 2026-05-18
 category: tutorial
+tags:
+  - nuxt
+  - markdown
 ---
 
 Nuxt Content v3 stores parsed markdown in a SQLite-backed collection. You define collections in `content.config.ts`, write files under `content/`, and query them with `queryCollection`.

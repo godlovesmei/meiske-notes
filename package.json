@@ -7,7 +7,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "new-post": "node scripts/new-post.mjs"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -17,8 +18,10 @@
   "dependencies": {
     "@nuxt/content": "^3.14.0",
     "@nuxt/fonts": "^0.14.0",
+    "@nuxtjs/sitemap": "^8.0.15",
     "@nuxtjs/tailwindcss": "^6.14.0",
     "better-sqlite3": "^12.10.0",
+    "minisearch": "^7.2.0",
     "nuxt": "^4.4.6",
     "vue": "^3.5.34",
     "vue-router": "^5.0.7"

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PostCategory } from '../../content.config'
-import { categoryLabels, categoryGlow } from '~/utils/posts'
+import { categoryLabels, categoryGlow, estimateReadingTime } from '~/utils/posts'
 
 const route = useRoute()
 const appConfig = useAppConfig()
@@ -100,6 +100,7 @@ useSeoMeta({
           :date="post.date"
           :category="post.category"
           :path="post.path"
+          :reading-time="estimateReadingTime(post.body, post.description, post.readingTime)"
         />
       </div>
 

@@ -1,2 +1,4 @@
 User-Agent: *
 Disallow:
+
+Sitemap: https://godlovesmei.github.io/meiske-notes/sitemap.xml

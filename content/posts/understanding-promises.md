@@ -3,6 +3,9 @@ title: Understanding promises in JavaScript
 description: A short mental model for async flow — when to reach for promises, async/await, and error boundaries.
 date: 2026-05-12
 category: learn
+tags:
+  - javascript
+  - async
 ---
 
 JavaScript concurrency is cooperative: one thread, many tasks interleaved. Promises represent a value that will exist later. Treat them as contracts, not callbacks with extra steps.
