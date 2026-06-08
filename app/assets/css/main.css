@@ -87,27 +87,31 @@
   }
 
   .prose-blog {
-    @apply max-w-prose font-sans text-lg leading-relaxed;
+    @apply font-sans text-base leading-relaxed text-body;
   }
 
   .prose-blog :where(h2, h3, h4) {
-    @apply font-sans font-medium tracking-tight text-ink;
+    @apply font-sans font-bold tracking-tight text-ink scroll-mt-20;
   }
 
   .prose-blog :where(h2) {
-    @apply mb-4 mt-12 text-2xl;
+    @apply mb-4 mt-10 text-2xl border-b border-hairline pb-2;
   }
 
   .prose-blog :where(h3) {
-    @apply mb-3 mt-8 text-xl;
+    @apply mb-3 mt-8 text-lg;
+  }
+
+  .prose-blog :where(h4) {
+    @apply mb-2 mt-6 text-sm uppercase tracking-wider text-mute;
   }
 
   .prose-blog :where(p) {
-    @apply mb-5;
+    @apply mb-5 text-[15px] leading-relaxed text-body/90;
   }
 
   .prose-blog :where(ul, ol) {
-    @apply mb-5 ml-6 space-y-2;
+    @apply mb-5 ml-6 space-y-2 text-[15px];
   }
 
   .prose-blog :where(ul) {
@@ -119,46 +123,64 @@
   }
 
   .prose-blog :where(li) {
-    @apply text-body;
+    @apply text-body/95;
   }
 
   .prose-blog :where(blockquote) {
-    @apply my-8 border-l-2 border-hairline-strong pl-6 font-favorit text-charcoal;
+    @apply my-6 border-l-2 border-accent-blue bg-elevated/20 px-5 py-4 rounded-r-lg font-favorit text-charcoal text-[14px] leading-relaxed;
+  }
+
+  .prose-blog :where(blockquote p) {
+    @apply m-0;
   }
 
   .prose-blog :where(a) {
-    @apply font-medium tracking-wide text-link underline-offset-2 hover:underline;
+    @apply font-medium tracking-wide text-link underline decoration-link/30 underline-offset-4 hover:decoration-link transition-all;
   }
 
   .prose-blog :where(code):not(:where(pre *)) {
-    @apply rounded-sm bg-card px-1.5 py-0.5 font-mono text-sm text-ink;
+    @apply rounded bg-elevated border border-hairline-strong px-1.5 py-0.5 font-mono text-[13px] text-ink font-semibold;
   }
 
   .prose-blog :where(pre) {
-    @apply my-8 overflow-x-auto rounded-lg border border-hairline-strong bg-deep p-6 font-mono text-sm leading-relaxed;
+    @apply my-6 overflow-x-auto rounded-lg border border-hairline-strong bg-deep p-5 font-mono text-[13px] leading-relaxed;
   }
 
   .prose-blog :where(pre code) {
-    @apply bg-transparent p-0 text-body;
+    @apply bg-transparent p-0 text-body font-normal;
   }
 
   .prose-blog :where(hr) {
-    @apply my-12 border-divider-soft;
+    @apply my-10 border-divider-soft;
   }
 
   .prose-blog :where(img) {
-    @apply my-8 rounded-lg border border-hairline-strong;
+    @apply rounded-lg border border-hairline-strong;
   }
 
   .prose-blog :where(table) {
-    @apply my-8 w-full text-sm;
+    @apply my-8 w-full border-collapse text-xs;
   }
 
   .prose-blog :where(th, td) {
-    @apply border border-hairline-strong px-4 py-2 text-left;
+    @apply border border-hairline-strong px-4 py-3 text-left leading-normal;
   }
 
   .prose-blog :where(th) {
-    @apply bg-elevated font-medium text-ink;
+    @apply bg-elevated font-semibold text-ink uppercase tracking-wider text-[10px];
+  }
+
+  .prose-blog :where(td) {
+    @apply text-body/90;
+  }
+
+  /* Figure and Lightbox overrides */
+  .prose-blog :where(figure) {
+    @apply my-8 flex flex-col items-center;
+  }
+
+  .prose-blog :where(figcaption) {
+    @apply mt-2.5 text-center text-xs text-mute/80 font-favorit max-w-prose leading-normal italic;
   }
 }
+

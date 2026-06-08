@@ -35,11 +35,17 @@ export function minimarkToPlainText(nodes: MinimarkNode[] | undefined): string {
       parts.push(node)
       continue
     }
-    if ('value' in node && typeof (node as MinimarkText).value === 'string') {
-      parts.push((node as MinimarkText).value)
+    if (typeof node === 'object' && node && 'value' in node) {
+      const value = (node as { value?: unknown }).value
+      if (typeof value === 'string') {
+        parts.push(value)
+      }
     }
-    if ('children' in node && Array.isArray(node.children)) {
-      parts.push(minimarkToPlainText(node.children as MinimarkNode[]))
+    if (typeof node === 'object' && node && 'children' in node) {
+      const children = (node as { children?: MinimarkNode[] }).children
+      if (Array.isArray(children)) {
+        parts.push(minimarkToPlainText(children))
+      }
     }
   }
   return parts.join(' ')
