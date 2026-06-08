@@ -4,9 +4,12 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
+    "ci": "pnpm typecheck && pnpm test && pnpm build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
+    "test": "node --test tests/*.test.ts",
+    "typecheck": "nuxt typecheck",
     "postinstall": "nuxt prepare",
     "new-post": "node scripts/new-post.mjs"
   },
@@ -25,5 +28,10 @@
     "nuxt": "^4.4.6",
     "vue": "^3.5.34",
     "vue-router": "^5.0.7"
+  },
+  "devDependencies": {
+    "@nuxt/kit": "^4.4.6",
+    "@types/node": "^24.13.1",
+    "vue-tsc": "^3.3.4"
   }
 }

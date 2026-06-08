@@ -22,9 +22,29 @@ Open [http://localhost:3000](http://localhost:3000).
 |---------|-------------|
 | `pnpm dev` | Development server |
 | `pnpm build` | Production build (Node server) |
+| `pnpm typecheck` | Nuxt/Vue type checking |
+| `pnpm test` | Node unit tests for post utilities |
+| `pnpm ci` | Typecheck, test, and production build |
 | `pnpm generate` | Static site export for GitHub Pages / Netlify |
 | `pnpm preview` | Preview production output |
 | `pnpm new-post <slug>` | Scaffold a new post in `content/posts/` |
+
+## CI/CD to Vercel
+
+GitHub Actions runs `pnpm typecheck`, `pnpm test`, and `pnpm build` before deployment.
+Preview deployments run for pull requests, non-production branch pushes, and manual preview dispatches.
+Production deployments run when `main` or `master` is pushed, or when the workflow is manually dispatched with `production`.
+`vercel.json` disables Vercel Git auto-deployments so deployments are gated by GitHub Actions.
+
+Add these repository secrets in GitHub:
+
+- `VERCEL_TOKEN`
+- `VERCEL_ORG_ID`
+- `VERCEL_PROJECT_ID`
+
+For Vercel, the app uses `/` as the base URL. Set `NUXT_PUBLIC_SITE_HOST` or
+`NUXT_PUBLIC_SITE_URL` in Vercel if you want RSS, sitemap, and canonical URLs to
+point at a custom domain.
 
 ## Static deployment
 

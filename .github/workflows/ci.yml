@@ -1,30 +1,159 @@
-name: CI
+name: CI/CD
 
 on:
   push:
-    branches: [main, master]
+    branches: ['**']
   pull_request:
     branches: [main, master]
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Vercel deployment target
+        type: choice
+        options:
+          - preview
+          - production
+        default: preview
+
+permissions:
+  contents: read
+  deployments: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: 24
+  PNPM_VERSION: 10
+  NUXT_APP_BASE_URL: /
 
 jobs:
-  build:
+  quality:
+    name: Quality gate
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v4
         with:
-          version: 10
+          version: ${{ env.PNPM_VERSION }}
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Generate static site
-        run: pnpm generate
-        env:
-          NUXT_PUBLIC_SITE_HOST: https://godlovesmei.github.io
-          NUXT_APP_BASE_URL: /meiske-notes/
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Unit tests
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+
+  deploy-preview:
+    name: Deploy preview
+    needs: quality
+    runs-on: ubuntu-latest
+    if: >-
+      github.event_name == 'workflow_dispatch' && inputs.target == 'preview' ||
+      github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository ||
+      github.event_name == 'push' && github.ref != 'refs/heads/main' && github.ref != 'refs/heads/master'
+    environment:
+      name: preview
+      url: ${{ steps.deploy.outputs.url }}
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Validate Vercel secrets
+        run: |
+          test -n "$VERCEL_TOKEN" || (echo "::error::Missing VERCEL_TOKEN secret" && exit 1)
+          test -n "$VERCEL_ORG_ID" || (echo "::error::Missing VERCEL_ORG_ID secret" && exit 1)
+          test -n "$VERCEL_PROJECT_ID" || (echo "::error::Missing VERCEL_PROJECT_ID secret" && exit 1)
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull preview environment
+        run: vercel pull --yes --environment=preview
+
+      - name: Build Vercel artifacts
+        run: vercel build
+
+      - name: Deploy preview
+        id: deploy
+        run: |
+          set -euo pipefail
+          url="$(vercel deploy --prebuilt --yes | tail -n 1)"
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "Preview deployment: $url" >> "$GITHUB_STEP_SUMMARY"
+
+  deploy-production:
+    name: Deploy production
+    needs: quality
+    runs-on: ubuntu-latest
+    if: >-
+      github.event_name == 'workflow_dispatch' && inputs.target == 'production' ||
+      github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.url }}
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Validate Vercel secrets
+        run: |
+          test -n "$VERCEL_TOKEN" || (echo "::error::Missing VERCEL_TOKEN secret" && exit 1)
+          test -n "$VERCEL_ORG_ID" || (echo "::error::Missing VERCEL_ORG_ID secret" && exit 1)
+          test -n "$VERCEL_PROJECT_ID" || (echo "::error::Missing VERCEL_PROJECT_ID secret" && exit 1)
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull production environment
+        run: vercel pull --yes --environment=production
+
+      - name: Build Vercel artifacts
+        run: vercel build --prod
+
+      - name: Deploy production
+        id: deploy
+        run: |
+          set -euo pipefail
+          url="$(vercel deploy --prebuilt --prod --yes | tail -n 1)"
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "Production deployment: $url" >> "$GITHUB_STEP_SUMMARY"

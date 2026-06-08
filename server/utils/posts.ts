@@ -1,6 +1,5 @@
 import type { H3Event } from 'h3'
 import type { MinimarkNode, MinimarkText } from '@nuxt/content'
-import { queryCollection } from '@nuxt/content/server'
 
 export type PostRecord = {
   path: string
@@ -19,6 +18,7 @@ export function isPublished(post: PostRecord) {
 }
 
 export async function fetchPublishedPosts(event: H3Event) {
+  const { queryCollection } = await import('@nuxt/content/server')
   const posts = await queryCollection(event, 'posts').order('date', 'DESC').all()
   return posts.filter(isPublished) as PostRecord[]
 }

@@ -38,11 +38,12 @@ function updateActiveHeading() {
     .map((link) => document.getElementById(link.id))
     .filter(Boolean) as HTMLElement[]
     
-  if (headings.length === 0) return
+  const firstHeading = headings[0]
+  if (!firstHeading) return
 
   // Offset matching sticky header height + safety padding (64px header + 20px padding)
   const offset = 90
-  let currentActive = headings[0].id
+  let currentActive = firstHeading.id
 
   for (const heading of headings) {
     const rect = heading.getBoundingClientRect()

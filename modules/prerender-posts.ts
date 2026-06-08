@@ -18,7 +18,9 @@ export default defineNuxtModule({
         const raw = await readFile(join(postsDir, file), 'utf-8')
         const match = raw.match(/^tags:\s*\n((?:\s+-\s+.+\n?)+)/m)
         if (!match) continue
-        const tags = [...match[1].matchAll(/-\s+(.+)/g)].map((m) => m[1]?.trim())
+        const tagsBlock = match[1]
+        if (!tagsBlock) continue
+        const tags = [...tagsBlock.matchAll(/-\s+(.+)/g)].map((m) => m[1]?.trim())
         for (const tag of tags) {
           if (tag) tagRoutes.push(`/tags/${encodeURIComponent(tag)}`)
         }

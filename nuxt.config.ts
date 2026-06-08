@@ -1,6 +1,16 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-const siteHost = process.env.NUXT_PUBLIC_SITE_HOST || 'https://godlovesmei.github.io'
-const baseURL = process.env.NUXT_APP_BASE_URL || '/meiske-notes/'
+function normalizeHost(host: string | undefined) {
+  if (!host) return undefined
+  const trimmed = host.replace(/\/$/, '')
+  return trimmed.startsWith('http') ? trimmed : `https://${trimmed}`
+}
+
+const vercelHost = normalizeHost(
+  process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL,
+)
+const siteHost =
+  process.env.NUXT_PUBLIC_SITE_HOST || vercelHost || 'https://godlovesmei.github.io'
+const baseURL = process.env.NUXT_APP_BASE_URL || (vercelHost ? '/' : '/meiske-notes/')
 const siteUrl =
   process.env.NUXT_PUBLIC_SITE_URL ||
   `${siteHost}${baseURL.replace(/\/$/, '')}`
