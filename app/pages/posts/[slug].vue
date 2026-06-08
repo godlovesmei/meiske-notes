@@ -2,7 +2,6 @@
 import {
   categoryGlow,
   estimateReadingTime,
-  flattenTocLinks,
   formatDate,
   formatReadingTime,
   isPublished,
@@ -28,7 +27,6 @@ const readingTime = computed(() =>
     post.value?.readingTime,
   ),
 )
-const tocLinks = computed(() => flattenTocLinks(post.value?.toc?.links as never))
 const canonicalUrl = computed(
   () => `${config.public.siteUrl}${post.value!.path}`,
 )
@@ -49,7 +47,7 @@ const { data: relatedPosts } = await useAsyncData(`related-${slug}`, async () =>
     })
     .filter(({ score }) => score > 0)
     .sort((a, b) => b.score - a.score)
-    .slice(0, 3)
+    .slice(0, 2) // Slice to 2 to make related list more compact in the doc view
     .map(({ entry }) => entry)
 })
 
@@ -69,64 +67,59 @@ useHead({
 </script>
 
 <template>
-  <article v-if="post">
-    <header class="relative overflow-hidden pb-12 pt-16 md:pb-16 md:pt-24">
+  <article v-if="post" class="relative max-w-4xl mx-auto w-full">
+    <!-- Glow Backdrop header -->
+    <header class="relative overflow-hidden pb-8 pt-4">
       <div
-        class="pointer-events-none absolute inset-x-0 top-0 h-[380px]"
+        class="pointer-events-none absolute inset-x-0 top-0 h-[280px] opacity-75"
         :class="glowClass"
         aria-hidden="true"
       />
-      <div class="site-container relative">
-        <NuxtLink
-          to="/"
-          class="inline-flex items-center gap-1 text-sm font-medium tracking-wide text-charcoal no-underline hover:text-ink"
-        >
-          <span aria-hidden="true">←</span>
-          All posts
-        </NuxtLink>
-        <div class="mt-8 flex flex-wrap items-center gap-3">
+      <div class="relative">
+        <!-- Breadcrumbs instead of raw back link -->
+        <DocBreadcrumbs :category="post.category" :title="post.title" />
+
+        <div class="flex flex-wrap items-center gap-3">
           <CategoryBadge :category="post.category" />
-          <time class="text-sm text-mute" :datetime="post.date">
+          <time class="text-xs text-mute" :datetime="post.date">
             {{ formatDate(post.date) }}
           </time>
-          <span class="text-sm text-mute">
+          <span class="text-xs text-mute border-l border-hairline-strong pl-3">
             {{ formatReadingTime(readingTime) }}
           </span>
         </div>
-        <TagList v-if="post.tags?.length" class="mt-4" :tags="post.tags" />
+
         <h1
-          class="font-display mt-6 max-w-3xl text-4xl leading-none tracking-tight text-ink sm:text-5xl"
+          class="font-sans mt-4 text-3xl leading-tight font-bold tracking-tight text-ink sm:text-4xl"
         >
           {{ post.title }}
         </h1>
-        <p class="mt-6 max-w-2xl font-favorit text-lg leading-relaxed text-charcoal">
+        <p class="mt-4 font-favorit text-base leading-relaxed text-charcoal max-w-3xl">
           {{ post.description }}
         </p>
+
+        <TagList v-if="post.tags?.length" class="mt-4" :tags="post.tags" />
       </div>
     </header>
 
-    <div class="site-container pb-section">
-      <div class="mx-auto flex max-w-content flex-col gap-10 lg:flex-row lg:items-start lg:gap-12">
-        <aside
-          v-if="tocLinks.length"
-          class="lg:sticky lg:top-24 lg:w-56 lg:shrink-0"
-        >
-          <PostToc :links="tocLinks" />
-        </aside>
-
-        <div class="min-w-0 flex-1">
-          <div class="card-surface p-8 md:p-10">
-            <div class="prose-blog mx-auto max-w-prose">
-              <ContentRenderer :value="post" />
-            </div>
-          </div>
-
-          <RelatedPosts
-            v-if="relatedPosts?.length"
-            :posts="relatedPosts"
-          />
+    <!-- Content Pane -->
+    <div class="relative mt-4">
+      <div class="card-surface p-6 md:p-8">
+        <div class="prose-blog mx-auto max-w-none">
+          <ContentRenderer :value="post" />
         </div>
+
+        <!-- Was this page helpful feedback widget -->
+        <DocFeedback />
       </div>
+
+      <!-- Related articles stack -->
+      <RelatedPosts
+        v-if="relatedPosts?.length"
+        :posts="relatedPosts"
+        class="mt-8"
+      />
     </div>
   </article>
 </template>
+

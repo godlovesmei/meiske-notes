@@ -1,6 +1,7 @@
 import { defineContentConfig, defineCollection, z } from '@nuxt/content'
 
-const category = z.enum(['learn', 'tutorial', 'debugging'])
+const categoryValues = ['learn', 'tutorial', 'debugging'] as const
+const category = z.enum(categoryValues)
 
 export default defineContentConfig({
   collections: {
@@ -20,4 +21,4 @@ export default defineContentConfig({
   },
 })
 
-export type PostCategory = z.infer<typeof category>
+export type PostCategory = (typeof categoryValues)[number]

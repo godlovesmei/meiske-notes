@@ -27,7 +27,7 @@ export default defineNuxtConfig({
 
   site: {
     url: siteHost,
-    name: 'Notes',
+    name: 'MeiNotes',
   },
 
   sitemap: {
@@ -36,20 +36,13 @@ export default defineNuxtConfig({
 
   fonts: {
     families: [
-      { name: 'Instrument Serif', provider: 'google' },
-      { name: 'Inter Tight', provider: 'google' },
+      { name: 'Playfair Display', provider: 'google' },
       { name: 'Inter', provider: 'google' },
-      { name: 'Geist Mono', provider: 'google' },
+      { name: 'JetBrains Mono', provider: 'google' },
     ],
   },
 
   content: {
-    highlight: {
-      theme: {
-        default: 'github-dark',
-        dark: 'github-dark',
-      },
-    },
     build: {
       markdown: {
         toc: {
@@ -77,13 +70,13 @@ export default defineNuxtConfig({
   app: {
     baseURL,
     head: {
-      titleTemplate: '%s · Notes',
+      titleTemplate: '%s · MeiNotes',
       htmlAttrs: { lang: 'en' },
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         {
           name: 'description',
-          content: 'Notes on learning, tutorials, and debugging.',
+          content: 'Tutorials, debugging stories, and things picked up along the way.',
         },
       ],
       link: [
