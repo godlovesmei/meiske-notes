@@ -12,10 +12,6 @@ const tagged = computed(() =>
   ),
 )
 
-if (!tagged.value.length) {
-  throw createError({ statusCode: 404, statusMessage: 'Tag not found' })
-}
-
 useSeoMeta({
   title: `Tag: ${tag}`,
   description: `Posts tagged with ${tag}.`,
@@ -35,7 +31,10 @@ useSeoMeta({
     </section>
 
     <section class="site-container pb-section">
-      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="tagged.length"
+        class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+      >
         <PostCard
           v-for="post in tagged"
           :key="post.path"
@@ -45,6 +44,9 @@ useSeoMeta({
           :category="post.category"
           :path="post.path"
         />
+      </div>
+      <div v-else class="card-surface max-w-prose p-8 text-charcoal">
+        No posts are tagged with {{ tag }} yet.
       </div>
     </section>
   </div>

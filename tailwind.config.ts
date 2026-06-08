@@ -32,10 +32,10 @@ export default {
         'primary-on': '#000000',
       },
       fontFamily: {
-        display: ['Instrument Serif', 'Georgia', 'serif'],
-        favorit: ['Inter Tight', 'Inter', 'system-ui', 'sans-serif'],
+        display: ['Playfair Display', 'Georgia', 'serif'],
+        favorit: ['Inter', 'system-ui', 'sans-serif'],
         sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['Geist Mono', 'ui-monospace', 'monospace'],
+        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
       },
       fontSize: {
         'display-xl': ['4.8rem', { lineHeight: '1', letterSpacing: '-0.768px' }],

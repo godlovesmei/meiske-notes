@@ -1,6 +1,6 @@
 export default defineAppConfig({
   site: {
-    name: 'Notes',
+    name: 'MeiNotes',
     tagline: 'Learning, tutorials, and debugging.',
     author: 'Meiske',
   },

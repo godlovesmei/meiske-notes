@@ -1,89 +1,82 @@
 <script setup lang="ts">
-const { stats } = usePostStats()
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 
-const goal = ref('')
+defineProps<{
+  compact?: boolean
+}>()
 
-onMounted(() => {
-  goal.value = localStorage.getItem('today-goal') || ''
+const route = useRoute()
+
+// Fetch all published posts
+const { data: posts } = await useAsyncData('sidebar-posts', () => {
+  return queryCollection('posts').order('date', 'DESC').all()
 })
 
-watch(goal, (newGoal) => {
-  localStorage.setItem('today-goal', newGoal)
+const categories = computed(() => {
+  const all = posts.value || []
+  
+  return [
+    {
+      id: 'tutorial',
+      label: 'Tutorials',
+      desc: 'Step-by-step developer guides',
+      iconPath: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253', // Book icon
+      items: all.filter(p => p.category === 'tutorial' && p.draft !== true)
+    },
+    {
+      id: 'learn',
+      label: 'Conceptual Learning',
+      desc: 'Deep dives and study notes',
+      iconPath: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z', // Lightbulb icon
+      items: all.filter(p => p.category === 'learn' && p.draft !== true)
+    },
+    {
+      id: 'debugging',
+      label: 'Troubleshooting',
+      desc: 'Debugging stories and fixes',
+      iconPath: 'M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636', // Bug/Danger icon
+      items: all.filter(p => p.category === 'debugging' && p.draft !== true)
+    }
+  ]
 })
-
-const navItems = [
-  { label: 'Home', icon: 'i-heroicons-home', count: computed(() => stats.value.total), to: '/' },
-  { label: 'Tutorials', icon: 'i-heroicons-academic-cap', count: computed(() => stats.value.categories.tutorial), to: '/?category=tutorial' },
-  { label: 'Debugging', icon: 'i-heroicons-bug-ant', count: computed(() => stats.value.categories.debugging), to: '/?category=debugging' },
-  { label: 'Snippets', icon: 'i-heroicons-code-bracket', count: computed(() => stats.value.tags.snippets), to: '/tags/snippets' },
-  { label: 'Archive', icon: 'i-heroicons-archive-box', count: 0, to: '/archive' },
-]
-
-const focusTags = [
-  { label: 'Frontend', tag: 'frontend' },
-  { label: 'Backend', tag: 'backend' },
-  { label: 'AI', tag: 'ai' },
-  { label: 'Fixes', tag: 'fixes' },
-]
 </script>
 
 <template>
-  <aside class="flex flex-col gap-8 py-8 pr-6">
-    <!-- Profile -->
-    <div class="flex items-center gap-3">
-      <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-on font-bold">
-        B
-      </div>
-      <div>
-        <h2 class="font-bold text-ink">Brain Log</h2>
-        <p class="text-xs text-body/70">Notes, tutorials, debugging</p>
-      </div>
-    </div>
-
-    <!-- Main Nav -->
-    <nav class="flex flex-col gap-1">
-      <NuxtLink
-        v-for="item in navItems"
-        :key="item.label"
-        :to="item.to"
-        class="group flex items-center justify-between rounded-md px-3 py-2 text-sm font-medium text-body transition-colors hover:bg-elevated hover:text-ink"
-        active-class="bg-elevated text-ink"
-      >
-        <div class="flex items-center gap-3">
-          <span :class="item.icon" class="h-5 w-5 text-body/50 group-hover:text-ink/70" />
-          {{ item.label }}
-        </div>
-        <span v-if="item.count !== undefined" class="text-xs text-body/40 group-hover:text-ink/60">
-          {{ item.count }}
+  <aside class="flex flex-col gap-6 py-6 font-favorit" :class="compact ? '' : 'pr-4'">
+    <!-- Navigation Sections -->
+    <div v-for="cat in categories" :key="cat.id" class="flex flex-col gap-2">
+      <!-- Category Header -->
+      <div class="flex items-center gap-2 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-mute/60 border-b border-hairline pb-1">
+        <svg class="h-4 w-4 stroke-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" :d="cat.iconPath" />
+        </svg>
+        <span>{{ cat.label }}</span>
+        <span class="ml-auto text-[10px] bg-elevated/80 border border-hairline px-1.5 rounded-full font-mono font-medium text-mute/50">
+          {{ cat.items.length }}
         </span>
-      </NuxtLink>
-    </nav>
+      </div>
 
-    <!-- Focus Section -->
-    <div>
-      <h3 class="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-body/50">Focus</h3>
-      <div class="flex flex-wrap gap-2 px-3">
+      <!-- Category Guides List -->
+      <div v-if="cat.items.length > 0" class="flex flex-col gap-0.5 pl-2">
         <NuxtLink
-          v-for="focus in focusTags"
-          :key="focus.label"
-          :to="`/tags/${focus.tag}`"
-          class="badge-pill hover:bg-hairline-strong transition-colors"
+          v-for="item in cat.items"
+          :key="item.path"
+          :to="item.path"
+          class="group flex items-center justify-between rounded-md px-3 py-2 text-sm text-body hover:bg-elevated/50 hover:text-ink transition-colors no-underline border-l-2 border-transparent"
+          active-class="!text-ink bg-elevated/70 !border-accent-blue font-medium shadow-sm"
         >
-          {{ focus.label }}
+          <span class="truncate pr-2">{{ item.title }}</span>
+          <svg class="h-3.5 w-3.5 text-mute/30 group-hover:text-ink/60 opacity-0 group-hover:opacity-100 transition-all shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
         </NuxtLink>
       </div>
-    </div>
 
-    <!-- Today's Goal -->
-    <div class="rounded-xl border border-hairline bg-elevated/50 p-4">
-      <h3 class="mb-2 text-xs font-semibold text-ink">Today's goal</h3>
-      <p class="mb-3 text-xs text-body/70">Capture one lesson, one mistake, and one reusable code pattern.</p>
-      <textarea
-        v-model="goal"
-        placeholder="Type your goal here..."
-        class="w-full bg-transparent text-sm text-ink placeholder:text-body/30 focus:outline-none"
-        rows="3"
-      ></textarea>
+      <!-- Empty Category State -->
+      <div v-else class="px-6 py-2 text-xs text-mute/40 italic">
+        No documents available
+      </div>
     </div>
   </aside>
 </template>
